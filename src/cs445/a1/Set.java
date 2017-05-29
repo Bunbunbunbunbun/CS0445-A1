@@ -5,18 +5,20 @@ package cs445.a1;
  */
 public class Set<E> implements SetInterface {
 
-    private E[] profileSet;
-    private int size;
-    private boolean isEmpty;
+    private E[] profileSet, tempArr; //array for profile and for dynamically sizing
+    private int size; //number of items
+    private boolean isEmpty, isFull; //flags for an empty and full array
 
 
     public Set(int setSize) {
         profileSet = ((E[]) new Object[setSize]);
+        size = 0;
     }
 
     public Set() {
-        // median number of Facebook feirnds, according to http://www.pewresearch.org/fact-tank/2014/02/03/6-new-facts-about-facebook/
+        // median number of Facebook friends, according to http://www.pewresearch.org/fact-tank/2014/02/03/6-new-facts-about-facebook/
         profileSet = ((E[]) new Object[200]);
+        size = 0;
     }
 
     public Set(E[] entries) {
@@ -32,8 +34,12 @@ public class Set<E> implements SetInterface {
     public int getCurrentSize() {
         int totalEntries = 0;
 
+        if (isEmpty == true || size == 0)
+            return 0;
+
         while (true) {
             if (profileSet[totalEntries] == null) {
+                size = totalEntries;
                 return totalEntries;
             } else {
                 totalEntries++;
@@ -47,7 +53,7 @@ public class Set<E> implements SetInterface {
      * @return true if this set is empty; false if not
      */
     public boolean isEmpty() {
-        if(profileSet[0] == null){
+        if(profileSet[0] == null || size == 0){
             return true;
         } else {
             return false;
@@ -76,9 +82,25 @@ public class Set<E> implements SetInterface {
      * @throws IllegalArgumentException If newEntry is null
      */
     public boolean add(Object newEntry) throws SetFullException, IllegalArgumentException {
+        if (newEntry == null){ //null entry check
+            throw new IllegalArgumentException("Entry cannot be null");
+        } else {
+            for (int i = 0; i < profileSet.length; i++){
+                if (newEntry.equals(profileSet[i])){ //duplicate entry check
+                    throw new IllegalArgumentException("Profile already exists in the set");
+                } else {
+                    if (profileSet.length == size)
+                        System.arraycopy(profileSet, 0, profileSet, 0, profileSet.length + 5); //dynamically resize array in such a way that it's not running every time the arrya is full
+                    try {
+                        profileSet[size] = (E) newEntry;
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        throw new SetFullException();
+                    }
+                    size++;
+                }
+            }
 
-
-
+        }
         return false;
     }
 
@@ -98,6 +120,16 @@ public class Set<E> implements SetInterface {
      * @throws IllegalArgumentException If entry is null
      */
     public boolean remove(Object entry) throws IllegalArgumentException {
+
+        for (int i = 0; i < profileSet.length; i++){
+            if (profileSet[i].equals(entry)){
+                profileSet[i] = null;
+                System.arraycopy(profileSet,i+1, profileSet, i, profileSet.length-i-1); //dynamically resize array
+                return true;
+            } else {
+                throw new IllegalArgumentException("Entry does not exist in set");
+            }
+        }
         return false;
     }
 
@@ -114,8 +146,16 @@ public class Set<E> implements SetInterface {
      *
      * @return The removed entry if the removal was successful; null otherwise
      */
-    public Object remove() {
-        return null;
+    public Object remove() { //This makes no sense. Needs some serious work.
+
+        int rand = (int) Math.random() * profileSet.length;
+
+        if (isEmpty == true){
+            return null;
+        } else {
+            remove(profileSet[rand]);
+            return profileSet[rand];
+        }
     }
 
     /**
@@ -145,7 +185,16 @@ public class Set<E> implements SetInterface {
      * @throws IllegalArgumentException If entry is null
      */
     public boolean contains(Object entry) throws IllegalArgumentException {
-        return false;
+
+        if (entry == null) {
+            throw new IllegalArgumentException("Entry must not be null");
+        } else {
+            for (int i = 0; i < profileSet.length; i++){
+                if(profileSet[i].equals(entry))
+                    return true;
+            }
+            return false;
+        }
     }
 
     /**
@@ -162,6 +211,23 @@ public class Set<E> implements SetInterface {
      * @return A newly-allocated array of all the entries in this set
      */
     public Object[] toArray() {
-        return new Object[0];
+        int step = 0;
+        Object[] tempArr = new Object[profileSet.length];
+
+        for (int i = 0; i < profileSet.length; i++){
+            if (!(profileSet[i] == null)){
+                tempArr[step] = profileSet[i];
+                step++;
+            }
+
+            System.arraycopy(tempArr, 0, tempArr, 0, step);
+        }
+        System.arraycopy(tempArr, 0, tempArr, 0, step);
+        return tempArr;
     }
+
+
+
+
+
 }
