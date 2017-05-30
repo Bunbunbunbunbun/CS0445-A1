@@ -5,6 +5,9 @@ package cs445.a1;
  */
 public class Profile implements ProfileInterface{
 
+    private String name, about;
+    private boolean follow;
+
     /**
      * Sets this profile's name.
      * <p>
@@ -19,6 +22,11 @@ public class Profile implements ProfileInterface{
      */
     public void setName(String newName) throws IllegalArgumentException {
 
+        if (newName == null)
+            throw new IllegalArgumentException("Name cannot be null");
+
+        this.name = newName;
+
     }
 
     /**
@@ -27,7 +35,7 @@ public class Profile implements ProfileInterface{
      * @return The name
      */
     public String getName() {
-        return null;
+        return name;
     }
 
     /**
@@ -42,6 +50,10 @@ public class Profile implements ProfileInterface{
      */
     public void setAbout(String newAbout) throws IllegalArgumentException {
 
+        if (newAbout == null)
+            throw new IllegalArgumentException("Blurb cannot be nulll");
+        this.about = newAbout;
+
     }
 
     /**
@@ -50,7 +62,7 @@ public class Profile implements ProfileInterface{
      * @return The blurb
      */
     public String getAbout() {
-        return null;
+        return about;
     }
 
     /**
