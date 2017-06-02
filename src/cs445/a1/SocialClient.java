@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
  * asymmetric (i.e., following) social network. It is a client of the Set and Profile classes.
  */
 public class SocialClient {
+    private static int setCapacity;
     // a set to store the profiles in the system
     private static SetInterface<ProfileInterface> profiles = new Set<ProfileInterface>(setCapacity);
     // a scanner to get input from the user
