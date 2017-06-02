@@ -68,9 +68,12 @@ public class Profile implements ProfileInterface{
         if(other == null)
             return false;
         else {
-            profilesFollowed.remove(other);
-            return true;
+            if(profilesFollowed.contains(other)) {
+                profilesFollowed.remove(other);
+                return true;
+            }
         }
+        return false;
     }
 
     public ProfileInterface[] following(int howMany) {
@@ -93,9 +96,6 @@ public class Profile implements ProfileInterface{
     }
 
     public ProfileInterface recommend() {
-
-
-        ProfileInterface returns = null;
         for(ProfileInterface friend : following(50)){
             for(ProfileInterface friendsFriend : friend.following(50)){
                 if(!profilesFollowed.contains(friendsFriend) && !friend.getName().equals(name) && !friendsFriend.getAbout().equals(about)){

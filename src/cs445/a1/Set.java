@@ -7,8 +7,8 @@ import java.util.Arrays;
  */
 public class Set<E> implements SetInterface {
 
-    private E[] profileSet, tempArr; //array for profile and for dynamically sizing
-    private int size; //number of items
+    private E[] profileSet;
+    private int size;
 
 
     public Set(int setSize) {
@@ -22,12 +22,17 @@ public class Set<E> implements SetInterface {
     }
 
     public Set(E[] entries) {
+        int counter = 0;
         size = entries.length;
         profileSet = ((E[]) new Object[size]);
 
-        for (int i = 0; i < size; i++)
-            profileSet[i] = entries[i];
-
+        for (int i = 0; i < entries.length; i++) {
+            if (!(contains(entries[i])) && entries[i] != null){
+                profileSet[counter] = entries[i];
+                counter++;
+                size++;
+            }
+        }
     }
 
     public int getCurrentSize() {
@@ -55,7 +60,7 @@ public class Set<E> implements SetInterface {
                 size++;
                 success = true;
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new SetFullException();
+                throw new SetFullException("Array is completely full");
             }
         }
         return success;
@@ -90,10 +95,9 @@ public class Set<E> implements SetInterface {
 
     public void clear() {
         if (size != 0) {
-            for (int i = 0; i < profileSet.length; i++) {
-                profileSet[i] = null;
-                size = 0;
-            }
+            profileSet = (E[]) new Object[0];
+            size = 0;
+
         }
     }
 
